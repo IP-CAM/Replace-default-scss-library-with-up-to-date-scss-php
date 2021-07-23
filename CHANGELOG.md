@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.0.1](https://www.github.com/brokeyourbike/pro-scss-opencart/compare/v1.0.0...v1.0.1) (2021-07-23)
+
+
+### Bug Fixes
+
+* bump version update ([917df93](https://www.github.com/brokeyourbike/pro-scss-opencart/commit/917df9306b7d2a4e5d4e2390608f9c6343728f87))
+
 ## 1.0.0 (2021-07-23)
 
 
