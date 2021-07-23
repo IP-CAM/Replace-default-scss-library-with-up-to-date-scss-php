@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>pro_scss</name>
+    <code>pro_scss</code>
+    <description>PRO SCSS</description>
+    <version>1.0.0</version>
+    <author><![CDATA[Ivan Stasiuk<br/><a href="https://stasi.uk">Get Help</a>]]></author>
+    <link>https://stasi.uk</link>
+
+    <file path="{admin,catalog}/controller/startup/sass.php">
+        <operation error="skip">
+            <search><![CDATA[include_once(DIR_STORAGE . 'vendor/scss.inc.php');]]></search>
+            <add position="replace"><![CDATA[/* PRO_SCSS START include_once(DIR_STORAGE . 'vendor/scss.inc.php'); PRO_SCSS END */]]></add>
+        </operation>
+
+        <operation error="skip">
+            <search><![CDATA[$scss = new Scssc();]]></search>
+            <add position="replace"><![CDATA[
+                /* PRO_SCSS START */
+                $scss = new \pro_scss\pro_scss();
+                /* PRO_SCSS END */
+            ]]></add>
+        </operation>
+    </file>
+
+</modification>

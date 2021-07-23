@@ -1,0 +1,53 @@
+name: release-please
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update_release_draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        php-version: [7.4, 8.0]
+
+    steps:
+      - uses: google-github-actions/release-please-action@v2
+        id: release
+        with:
+          release-type: simple
+
+      - uses: actions/checkout@v2
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        if: ${{ steps.release.outputs.release_created }}
+        with:
+          php-version: ${{ matrix.php-versions }}
+          tools: composer:v2
+
+      - name: Install PHP dependencies
+        if: ${{ steps.release.outputs.release_created }}
+        run: cd system/library/pro_scss/ && composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Prepare Ocmod
+        uses: brokeyourbike/prepare-opencart-module-action@v1
+        if: ${{ steps.release.outputs.release_created }}
+        id: prepare
+        with:
+          module-name: pro-scss-v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}-PHP${{ matrix.php-versions }}
+          modification-file: system/library/stasiuk/install/pro_scss.xml
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: ${{ steps.prepare.outputs.output_file }}
+          asset_name: ${{ steps.prepare.outputs.output_name }}
+          asset_content_type: application/zip
